@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 // Components
 import Item from './Item/Item';
 import Cart from './Cart/Cart';
@@ -22,13 +22,13 @@ export type CartItemType = {
 }
 
 const getProducts = async (): Promise<CartItemType[]> => /* gets fake store data from api */
-  await(await fetch('https://fakestoreapi.com/products')).json();
+  await (await fetch('https://fakestoreapi.com/products')).json();
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
   const { data, isLoading, error } = useQuery<CartItemType[]>(
-    'products', 
+    'products',
     getProducts
   );
   console.log(data);
@@ -36,19 +36,36 @@ const App = () => {
   const getTotalItems = (items: CartItemType[]) =>
     items.reduce((ack: number, item) => ack + item.amount, 0);
   /* accumulator keeps track of number of items across iterations */
-  
-  const handleAddToCart = (clickedItem: CartItemType) => null;
 
-  const handleRemoveFromCart = () => null;
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems(prev => { /* prev is the previous state of the items */
+      // 1. Is the item already in the cart?
+      const isItemInCart = prev.find(item => item.id === clickedItem.id);
 
-  if(isLoading) return <LinearProgress />;
-  if(error) return <div>Something went wrong...</div>;
+      if (isItemInCart) {
+        return prev.map(item =>
+          item.id === clickedItem.id
+            ? { ...item, amount: item.amount + 1 }
+            : item
+        );
+      }
+      // 2. First time the item is added
+      return [...prev, { ...clickedItem, amount: 1 }];
+      /* if the item is not in the cart, return an array of all the previous items 
+      and the clicked item with its amount now set to 1 */
+    });
+  };
+
+  const handleRemoveFromCart = (id: number) => null;
+
+  if (isLoading) return <LinearProgress />;
+  if (error) return <div>Something went wrong...</div>;
 
   return (
     <Wrapper>
       <Drawer anchor='right' open={cartOpen} onClose={() => setCartOpen(false)}>
-        <Cart 
-          cartItems={cartItems} 
+        <Cart
+          cartItems={cartItems}
           addToCart={handleAddToCart}
           removeFromCart={handleRemoveFromCart}
         />
