@@ -5,4 +5,4 @@ from the Fake Store API. It features a loading bar at the top of the screen when
 corner. In the shopping cart display, one can view the items added to their cart and change the quantity of each item using the provided buttons. Beneath all items,
 a total cost of all items in the cart is calculated and displayed.
 ## View the App
-Clone this repository using `git clone` and then run `npm start`. You should then be able to view the full app in a tab in your browser.
+Clone this repository using `git clone` and then run `npm start` in the cloned directory. You should then be able to view the full app in a tab in your browser.
